@@ -3,11 +3,12 @@
     public static bool ContinueGame = true;
     public static Random rnd = new Random();
     public static readonly char EnemySkin = 'O';
-    public static readonly int EnemySpeed = 250;
+    public static int EnemySpeed;
+    public static int CursorX;
 
     public class Map
     {
-        private static readonly string[] save = File.ReadAllLines("map.txt");
+        private static readonly string[] save = File.ReadAllLines("map2.txt");
         private static readonly byte NumberOfRows = (byte)save.Length;
         private static readonly byte NumberOfColumns = (byte)save[0].Length;
         public static char[][] map = new char[NumberOfRows][];
@@ -60,7 +61,7 @@
             ReturnCursorToSave();
         }
 
-        public Map(byte NumberOfEnemies, int EnemySpeed)
+        public Map(byte NumberOfEnemies, int EnemySpeedX)
         {
             TurnToCharArray();
 
@@ -72,6 +73,8 @@
                 Enemy Enemy = new Enemy((byte)x, (byte)y);
                 ListOfEnemies.Add(Enemy);
             }
+
+            EnemySpeed = EnemySpeedX;
 
             // Enemy enemy1 = new Enemy(8, 2);
 
@@ -189,18 +192,11 @@
 
     static void Main()
     {
-        Map map = new Map(5, 5);
+        Map map = new Map(5, 250);
 
-        // int i = 1;
-        // foreach (Enemy e in map.ListOfEnemies)
-        // {
-        //     Console.WriteLine($"Enemy {i}:    X: {e.x} y: {e.y} ");
-        //     i++;
-        // }
-
-        //Map.PrintMap();
         Map.PrintMap();
 
+        Console.ForegroundColor = ConsoleColor.Red;
         foreach (Enemy e in map.ListOfEnemies)
         {
             Task.Run(e.MoveEnemy);
@@ -208,13 +204,6 @@
             //Thread.Sleep(1000);
             //Task.Run(e.MoveEnemy);
         }
-        while (true) ;
+       while (true) ;
     }
-
-
-
-
-
-
-
 }
