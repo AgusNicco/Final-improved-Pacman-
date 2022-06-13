@@ -3,7 +3,7 @@
     public static bool ContinueGame = true;
     public static Random rnd = new Random();
     public static readonly char EnemySkin = 'O';
-    public static readonly int EnemySpeed = 100;
+    public static readonly int EnemySpeed = 250;
 
     public class Map
     {
@@ -64,36 +64,47 @@
         {
             TurnToCharArray();
 
-            // for (byte i = 0; i < NumberOfEnemies; i++)
-            // {
+            for (byte i = 0; i < NumberOfEnemies; i++)
+            {
+                int x = 8 ;// (byte)rnd.Next(5, NumberOfColumns - 1);
+                int y = 2 ;//(byte)rnd.Next(2, NumberOfRows - 1);
 
-            //     int x = 8 + 4 * i;// (byte)rnd.Next(5, NumberOfColumns - 1);
-            //     int y = 2 + 5 * i;//(byte)rnd.Next(2, NumberOfRows - 1);
+                Enemy Enemy = new Enemy((byte)x, (byte)y);
+                ListOfEnemies.Add(Enemy);
+            }
 
-            //     Enemy Enemy = new Enemy((byte)x, (byte)y);
-            //     ListOfEnemies.Add(Enemy);
-            // }
+            // Enemy enemy1 = new Enemy(8, 2);
 
-            Enemy enemy1 = new Enemy(8, 2);
 
-        
-            Enemy enemy2 = new Enemy(12, 7);
+            // Enemy enemy2 = new Enemy(12, 7);
 
-            ListOfEnemies.Add(enemy1);
-            ListOfEnemies.Add(enemy2);
+            // ListOfEnemies.Add(enemy1);
+            // ListOfEnemies.Add(enemy2);
 
         }
-    } 
+    }
 
     public class Enemy
     {
-        public static byte x { get; set; }
-        public static byte y { get; set; }
-        // public byte PreviousX = x, PreviousY = y;
+        public byte x { get; set; }
+        public byte y { get; set; }
 
         public static bool IsActionrunning = false;
 
-        public Action MoveEnemy = () =>
+        public Action MoveEnemy;
+
+        public void UpdatePositionTo(int X, int Y)
+        {
+            x = (byte)X;
+            y = (byte)Y;
+        }
+
+        public Enemy(byte Xvalue, byte Yvalue)
+        {
+            x = Xvalue;
+            y = Yvalue;
+
+            MoveEnemy = () =>
         {
             IsActionrunning = true;
 
@@ -155,17 +166,6 @@
                 }
             }
         };
-
-        public static void UpdatePositionTo(int X, int Y)
-        {
-            x = (byte) X;
-            y = (byte) Y;
-        }
-
-        public Enemy(byte Xvalue, byte Yvalue)
-        {
-            x = Xvalue;
-            y = Yvalue;
         }
     }
 
@@ -189,7 +189,7 @@
 
     static void Main()
     {
-        Map map = new Map(2, 5);
+        Map map = new Map(5, 5);
 
         // int i = 1;
         // foreach (Enemy e in map.ListOfEnemies)
@@ -208,7 +208,7 @@
             //Thread.Sleep(1000);
             //Task.Run(e.MoveEnemy);
         }
-        while(true);
+        while (true) ;
     }
 
 
@@ -216,5 +216,5 @@
 
 
 
-    
+
 }
