@@ -1,0 +1,15 @@
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/boludeo4
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/boludeo4.deps.json
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/boludeo4.runtimeconfig.json
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/boludeo4.dll
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/ref/boludeo4.dll
+/Users/agus/my-code-dir/boludeo4/bin/Debug/net6.0/boludeo4.pdb
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.csproj.AssemblyReference.cache
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.GeneratedMSBuildEditorConfig.editorconfig
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.AssemblyInfoInputs.cache
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.AssemblyInfo.cs
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.csproj.CoreCompileInputs.cache
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.dll
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/ref/boludeo4.dll
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.pdb
+/Users/agus/my-code-dir/boludeo4/obj/Debug/net6.0/boludeo4.genruntimeconfig.cache
