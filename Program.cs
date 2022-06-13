@@ -3,7 +3,7 @@
     public static bool ContinueGame = true;
     public static Random rnd = new Random();
     public static readonly char EnemySkin = 'O';
-    public static readonly int EnemySpeed = 500;
+    public static readonly int EnemySpeed = 100;
 
     public class Map
     {
@@ -40,7 +40,7 @@
 
         public static void DeleteCharacter(byte x, byte y)
         {
-            map[x][y] = ' ';
+            map[y][x] = ' ';
             SaveCursorPosition();
             Console.CursorLeft = x;
             Console.CursorTop = y;
@@ -51,7 +51,7 @@
 
         public static void PrintCharacter(char c, int x, int y)
         {
-            map[x][y] = c;
+            map[y][x] = c;
             SaveCursorPosition();
             Console.CursorLeft = x;
             Console.CursorTop = y;
@@ -64,25 +64,34 @@
         {
             TurnToCharArray();
 
-            for (byte i = 0; i < NumberOfEnemies; i++)
-            {
-                byte x = 2;// (byte)rnd.Next(5, NumberOfColumns - 1);
-                byte y = 8;//(byte)rnd.Next(2, NumberOfRows - 1);
+            // for (byte i = 0; i < NumberOfEnemies; i++)
+            // {
 
-                Enemy Enemy = new Enemy(x, y);
-                ListOfEnemies.Add(Enemy);
-            }
+            //     int x = 8 + 4 * i;// (byte)rnd.Next(5, NumberOfColumns - 1);
+            //     int y = 2 + 5 * i;//(byte)rnd.Next(2, NumberOfRows - 1);
+
+            //     Enemy Enemy = new Enemy((byte)x, (byte)y);
+            //     ListOfEnemies.Add(Enemy);
+            // }
+
+            Enemy enemy1 = new Enemy(8, 2);
+
+        
+            Enemy enemy2 = new Enemy(12, 7);
+
+            ListOfEnemies.Add(enemy1);
+            ListOfEnemies.Add(enemy2);
+
         }
-    }
+    } 
 
     public class Enemy
     {
         public static byte x { get; set; }
         public static byte y { get; set; }
-        public byte PreviousX = x, PreviousY = y;
+        // public byte PreviousX = x, PreviousY = y;
 
         public static bool IsActionrunning = false;
-
 
         public Action MoveEnemy = () =>
         {
@@ -162,7 +171,7 @@
 
     public static bool TryEnemyMove(int x, int y)
     {
-        if (Map.map[x][y] != '#') return true;
+        if (Map.map[y][x] != '#') return true;
         else return false;
     }
 
@@ -180,7 +189,7 @@
 
     static void Main()
     {
-        Map map = new Map(1, 5);
+        Map map = new Map(2, 5);
 
         // int i = 1;
         // foreach (Enemy e in map.ListOfEnemies)
@@ -195,8 +204,9 @@
         foreach (Enemy e in map.ListOfEnemies)
         {
             Task.Run(e.MoveEnemy);
-            Thread.Sleep(1000);
-            Task.Run(e.MoveEnemy);
+            Thread.Sleep(100);
+            //Thread.Sleep(1000);
+            //Task.Run(e.MoveEnemy);
         }
         while(true);
     }
