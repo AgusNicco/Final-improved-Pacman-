@@ -4,13 +4,19 @@
     public static Random rnd = new Random();
     public static readonly char EnemySkin = 'O';
     public static int EnemySpeed;
-    public static int CursorX;
+    public static byte CursorX = 1;
+    public static byte CursorY = 1;
+
+    public static bool IsPrinting = false;
+
+
 
     public class Map
     {
         private static readonly string[] save = File.ReadAllLines("map2.txt");
         private static readonly byte NumberOfRows = (byte)save.Length;
         private static readonly byte NumberOfColumns = (byte)save[0].Length;
+
         public static char[][] map = new char[NumberOfRows][];
 
         public List<Enemy> ListOfEnemies = new List<Enemy> { };
@@ -42,7 +48,6 @@
         public static void DeleteCharacter(byte x, byte y)
         {
             map[y][x] = ' ';
-            SaveCursorPosition();
             Console.CursorLeft = x;
             Console.CursorTop = y;
 
@@ -52,13 +57,14 @@
 
         public static void PrintCharacter(char c, int x, int y)
         {
+
             map[y][x] = c;
-            SaveCursorPosition();
             Console.CursorLeft = x;
             Console.CursorTop = y;
 
             Console.Write(c);
             ReturnCursorToSave();
+
         }
 
         public Map(byte NumberOfEnemies, int EnemySpeedX)
@@ -67,25 +73,18 @@
 
             for (byte i = 0; i < NumberOfEnemies; i++)
             {
-                int x = 8 ;// (byte)rnd.Next(5, NumberOfColumns - 1);
-                int y = 2 ;//(byte)rnd.Next(2, NumberOfRows - 1);
+                int x = 13;// (byte)rnd.Next(5, NumberOfColumns - 1);
+                int y = 11;//(byte)rnd.Next(2, NumberOfRows - 1);
 
                 Enemy Enemy = new Enemy((byte)x, (byte)y);
                 ListOfEnemies.Add(Enemy);
             }
 
             EnemySpeed = EnemySpeedX;
-
-            // Enemy enemy1 = new Enemy(8, 2);
-
-
-            // Enemy enemy2 = new Enemy(12, 7);
-
-            // ListOfEnemies.Add(enemy1);
-            // ListOfEnemies.Add(enemy2);
-
         }
     }
+
+
 
     public class Enemy
     {
@@ -108,71 +107,111 @@
             y = Yvalue;
 
             MoveEnemy = () =>
-        {
-            IsActionrunning = true;
-
-            while (ContinueGame)
             {
-                switch (rnd.Next(1, 5))
+                IsActionrunning = true;
+
+                while (ContinueGame)
                 {
-                    case 1:
-                        {
-                            //north
-                            while (TryEnemyMove(x, y - 1))
+                    switch (rnd.Next(1, 5))
+                    {
+                        case 1:
                             {
-                                Map.DeleteCharacter(x, y);
-                                Map.PrintCharacter(EnemySkin, x, y - 1);
-                                UpdatePositionTo(x, y - 1);
-                                Thread.Sleep(EnemySpeed);
+                                //north
+                                while (TryMove(x, y - 1))
+                                {
+                                    while (true)
+                                    {
+                                        Thread.Sleep(rnd.Next(1, 21));
+                                        if (!IsPrinting)
+                                        {
+                                            IsPrinting = true;
+                                            Map.DeleteCharacter(x, y);
+                                            Map.PrintCharacter(EnemySkin, x, y - 1);
+                                            IsPrinting = false;
+                                            break;
+                                        }
+                                    }
+                                    UpdatePositionTo(x, y - 1);
+                                    Thread.Sleep(EnemySpeed);
+                                }
+                                break;
                             }
-                            break;
-                        }
 
-                    case 2:
-                        {
-                            //south
-                            while (TryEnemyMove(x, y + 1))
+                        case 2:
                             {
-                                Map.DeleteCharacter(x, y);
-                                Map.PrintCharacter(EnemySkin, x, y + 1);
-                                UpdatePositionTo(x, y + 1);
-                                Thread.Sleep(EnemySpeed);
+                                //south
+                                while (TryMove(x, y + 1))
+                                {
+                                    while (true)
+                                    {
+                                        Thread.Sleep(rnd.Next(1, 21));
+                                        if (!IsPrinting)
+                                        {
+                                            IsPrinting = true;
+                                            Map.DeleteCharacter(x, y);
+                                            Map.PrintCharacter(EnemySkin, x, y + 1);
+                                            IsPrinting = false;
+                                            break;
+                                        }
+                                    }
+                                    UpdatePositionTo(x, y + 1);
+                                    Thread.Sleep(EnemySpeed);
+                                }
+                                break;
                             }
-                            break;
-                        }
 
-                    case 3:
-                        {
-                            //west
-                            while (TryEnemyMove(x - 1, y))
+                        case 3:
                             {
-                                Map.DeleteCharacter(x, y);
-                                Map.PrintCharacter(EnemySkin, x - 1, y);
-                                UpdatePositionTo(x - 1, y);
-                                Thread.Sleep(EnemySpeed);
+                                //west
+                                while (TryMove(x - 1, y))
+                                {
+                                    while (true)
+                                    {
+                                        Thread.Sleep(rnd.Next(1, 21));
+                                        if (!IsPrinting)
+                                        {
+                                            IsPrinting = true;
+                                            Map.DeleteCharacter(x, y);
+                                            Map.PrintCharacter(EnemySkin, x - 1, y);
+                                            IsPrinting = false;
+                                            break;
+                                        }
+                                    }
+                                    UpdatePositionTo(x - 1, y);
+                                    Thread.Sleep(EnemySpeed);
+                                }
+                                break;
                             }
-                            break;
-                        }
 
-                    case 4:
-                        {
-                            //east
-                            while (TryEnemyMove(x + 1, y))
+                        case 4:
                             {
-                                Map.DeleteCharacter(x, y);
-                                Map.PrintCharacter(EnemySkin, x + 1, y);
-                                UpdatePositionTo(x + 1, y);
-                                Thread.Sleep(EnemySpeed);
+                                //east
+                                while (TryMove(x + 1, y))
+                                {
+                                    while (true)
+                                    {
+                                        Thread.Sleep(rnd.Next(1, 21));
+                                        if (!IsPrinting)
+                                        {
+                                            IsPrinting = true;
+                                            Map.DeleteCharacter(x, y);
+                                            Map.PrintCharacter(EnemySkin, x + 1, y);
+                                            IsPrinting = false;
+                                            break;
+                                        }
+                                    }
+                                    UpdatePositionTo(x + 1, y);
+                                    Thread.Sleep(EnemySpeed);
+                                }
+                                break;
                             }
-                            break;
-                        }
+                    }
                 }
-            }
-        };
+            };
         }
     }
 
-    public static bool TryEnemyMove(int x, int y)
+    public static bool TryMove(int x, int y)
     {
         if (Map.map[y][x] != '#') return true;
         else return false;
@@ -186,24 +225,94 @@
     }
     public static void ReturnCursorToSave()
     {
-        Console.CursorLeft = SaveCursorX;
-        Console.CursorTop = SaveCursorY;
+        Console.CursorLeft = CursorX;
+        Console.CursorTop = CursorY;
     }
 
+    public static void ReadKey()
+    {
+        while (ContinueGame)
+        {
+
+            ConsoleKey UserInput = Console.ReadKey(true).Key;
+
+            if (UserInput == ConsoleKey.W || UserInput == ConsoleKey.UpArrow)
+            {
+                if (TryMove(CursorX, CursorY - 1))
+                {
+                    CursorY -= 1;
+                }
+            }
+
+            if (UserInput == ConsoleKey.S || UserInput == ConsoleKey.DownArrow)
+            {
+                if (TryMove(CursorX, CursorY + 1))
+                {
+                    CursorY += 1;
+                }
+            }
+
+            if (UserInput == ConsoleKey.A || UserInput == ConsoleKey.LeftArrow)
+            {
+                if (TryMove(CursorX - 1, CursorY))
+                {
+                    CursorX -= 1;
+                }
+            }
+
+            if (UserInput == ConsoleKey.D || UserInput == ConsoleKey.RightArrow)
+            {
+                if (TryMove(CursorX + 1, CursorY))
+                {
+                    CursorX += 1;
+                }
+            }
+        }
+    }
+
+    public static void EndGame()
+    {
+        ContinueGame = false;
+
+        Console.Clear();
+        Console.WriteLine("\nGame over\n");
+    }
     static void Main()
     {
-        Map map = new Map(5, 250);
+        Map map = new Map(12, 175);
 
         Map.PrintMap();
 
+        Action TouchedEnemy = () =>
+        {
+            while (ContinueGame)
+            {
+                while (true)
+                {
+                    Thread.Sleep(rnd.Next(1, 21));
+                    if (!IsPrinting)
+                    {
+                        foreach (Enemy e in map.ListOfEnemies)
+                        {
+                            if (CursorX == e.x && CursorY == e.y)
+                            {
+                                EndGame();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+
+        Task.Run(TouchedEnemy);
         Console.ForegroundColor = ConsoleColor.Red;
+
         foreach (Enemy e in map.ListOfEnemies)
         {
             Task.Run(e.MoveEnemy);
-            Thread.Sleep(100);
-            //Thread.Sleep(1000);
-            //Task.Run(e.MoveEnemy);
+            Thread.Sleep(13);
         }
-       while (true) ;
+        ReadKey();
     }
 }
