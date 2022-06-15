@@ -10,6 +10,8 @@
     public static int CursorY = 1;
     public static ConsoleColor PrintColor = ConsoleColor.Red;
 
+    public static string MapChosen;
+
     public static bool Won = false;
 
     public static bool IsPrinting = false;
@@ -18,7 +20,7 @@
 
     public class Map
     {
-        private static readonly string[] save = File.ReadAllLines("map2.txt");
+        private static readonly string[] save = File.ReadAllLines(MapChosen);
         private static readonly int NumberOfRows = save.Length;
         private static readonly int NumberOfColumns = save[0].Length;
 
@@ -346,45 +348,69 @@
         }
     }
 
-    static void Main()
+    public static void ChooseDifficulty()
     {
-        string[] save = File.ReadAllLines("map2.txt");
+        Console.Clear();
 
+        Console.WriteLine("Use the keyboard to choose the level of diffuculty: \n");
+        Console.WriteLine("A: Easy");
+        Console.WriteLine("B: Normal");
+        Console.WriteLine("C: Hard");
+        Console.WriteLine("D: Impossible");
 
-        for (int i = 0; i < save.Length; i++)
+        bool IsUserStupid = true;
+
+        while (IsUserStupid)
         {
-            OriginalMap.Add(save[i].ToCharArray());
+            switch (Console.ReadKey(true).Key)
+            {
+                case ConsoleKey.A:
+                    {
+                        MapChosen = "map1.txt";
+                        IsUserStupid = false;
+                        break;
+                    }
+                    case ConsoleKey.B:
+                    {
+                        MapChosen = "map2.txt";
+                        IsUserStupid = false;
+                        break;
+                    }
+                    case ConsoleKey.C:
+                    {
+                        MapChosen = "map3.txt";
+                        IsUserStupid = false;
+                        break;
+                    }
+                    case ConsoleKey.D:
+                    {
+                        MapChosen = "map4.txt";
+                        IsUserStupid = false;
+                        break;
+                    }
+            }
         }
 
 
-        Map map = new Map(0, 150);
+    }
+
+    static void Main()
+    {
+        ChooseDifficulty();
+        // string[] save = File.ReadAllLines(MapChosen);
+
+
+        // for (int i = 0; i < save.Length; i++)
+        // {
+        //     OriginalMap.Add(save[i].ToCharArray());
+        // }
+
+
+        Map map = new Map(0, 200);
 
         Map.PrintMap();
         Map.ColorSpecialCharacters();
 
-
-
-        Action TouchedEnemy = () =>
-        {
-            while (ContinueGame)
-            {
-                //while (true)
-                // {
-                Thread.Sleep(rnd.Next(1, 21));
-                if (!IsPrinting)
-                {
-                    foreach (Enemy e in map.ListOfEnemies)
-                    {
-                        if (CursorX == e.x && CursorY == e.y)
-                        {
-                            EndGame();
-                        }
-                    }
-                    // break;
-                }
-                // }
-            }
-        };
 
         Action TouchedSpecialCharacter = () =>
         {
@@ -416,7 +442,6 @@
 
 
         Task.Run(TouchedSpecialCharacter);
-        //Task.Run(TouchedEnemy);
 
 
         Console.ForegroundColor = ConsoleColor.Red;
