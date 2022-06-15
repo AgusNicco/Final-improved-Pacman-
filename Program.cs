@@ -1,21 +1,26 @@
 ﻿class Program
 {
+
     public static bool ContinueGame = true;
     public static Random rnd = new Random();
     public static readonly char EnemySkin = 'O';
     public static int EnemySpeed;
-    public static byte CursorX = 1;
-    public static byte CursorY = 1;
+    public static int Score;
+    public static int CursorX = 1;
+    public static int CursorY = 1;
+    public static ConsoleColor PrintColor = ConsoleColor.Red;
+
+    public static bool Won = false;
 
     public static bool IsPrinting = false;
 
-
+    public static List<char[]> OriginalMap = new List<char[]> { };
 
     public class Map
     {
         private static readonly string[] save = File.ReadAllLines("map2.txt");
-        private static readonly byte NumberOfRows = (byte)save.Length;
-        private static readonly byte NumberOfColumns = (byte)save[0].Length;
+        private static readonly int NumberOfRows = save.Length;
+        private static readonly int NumberOfColumns = save[0].Length;
 
         public static char[][] map = new char[NumberOfRows][];
 
@@ -23,7 +28,7 @@
 
         private static void TurnToCharArray()
         {
-            for (byte i = 0; i < NumberOfRows; i++)
+            for (int i = 0; i < NumberOfRows; i++)
             {
                 map[i] = save[i].ToCharArray();
             }
@@ -35,49 +40,102 @@
             Console.CursorTop = 0;
             Console.CursorLeft = 0;
 
-            for (byte i = 0; i < NumberOfRows; i++)
+            for (int i = 0; i < NumberOfRows; i++)
             {
-                for (byte j = 0; j < map[i].Length; j++)
+                for (int j = 0; j < map[i].Length; j++)
                 {
                     Console.Write(map[i][j]);
+                    Thread.Sleep(3);
                 }
                 Console.WriteLine();
             }
         }
 
-        public static void DeleteCharacter(byte x, byte y)
+        public static void ColorSpecialCharacters()
         {
-            map[y][x] = ' ';
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                for (int j = 0; j < map[i].Length; j++)
+                {
+                    if (map[i][j] == '.')
+                    {
+                        Console.CursorTop = i;
+                        Console.CursorLeft = j;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write('.');
+                        Thread.Sleep(4);
+                    }
+                    if (map[i][j] == EnemySkin)
+                    {
+                        Console.CursorTop = i;
+                        Console.CursorLeft = j;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(EnemySkin);
+                        Thread.Sleep(4);
+                    }
+                    if (map[i][j] == '*')
+                    {
+                        Console.CursorTop = i;
+                        Console.CursorLeft = j;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write('*');
+                        Thread.Sleep(4);
+                    }
+                }
+            }
+
+        }
+
+        public static void DeleteCharacter(int x, int y)
+        {
             Console.CursorLeft = x;
             Console.CursorTop = y;
 
-            Console.Write(' ');
+            PrintColor = ConsoleColor.Yellow;
+            map[y][x] = ' ';
+            Console.Write(map[y][x]);
             ReturnCursorToSave();
         }
 
         public static void PrintCharacter(char c, int x, int y)
         {
-
             map[y][x] = c;
             Console.CursorLeft = x;
             Console.CursorTop = y;
 
             Console.Write(c);
+            if (y == CursorY && x == CursorX) EndGame();
             ReturnCursorToSave();
-
+            if (map[CursorY][CursorX] == '*')
+            {
+                Won = true;
+                EndGame();
+            }
         }
 
-        public Map(byte NumberOfEnemies, int EnemySpeedX)
+        public Map(int NumberOfEnemies, int EnemySpeedX)
         {
             TurnToCharArray();
 
-            for (byte i = 0; i < NumberOfEnemies; i++)
+            for (int i = 0; i < NumberOfEnemies; i++)
             {
-                int x = 13;// (byte)rnd.Next(5, NumberOfColumns - 1);
-                int y = 11;//(byte)rnd.Next(2, NumberOfRows - 1);
+                int x = 13;
+                int y = 11;
 
-                Enemy Enemy = new Enemy((byte)x, (byte)y);
+                Enemy Enemy = new Enemy(x, y);
                 ListOfEnemies.Add(Enemy);
+            }
+
+            for (int i = 0; i < map.Length; i++)
+            {
+                for (int j = 0; j < map[i].Length; j++)
+                {
+                    if (map[i][j] == EnemySkin)
+                    {
+                        Enemy Enemy = new Enemy(j, i);
+                        ListOfEnemies.Add(Enemy);
+                    }
+                }
             }
 
             EnemySpeed = EnemySpeedX;
@@ -85,11 +143,12 @@
     }
 
 
-
     public class Enemy
     {
-        public byte x { get; set; }
-        public byte y { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
+
+        public char SaveChar;
 
         public static bool IsActionrunning = false;
 
@@ -97,14 +156,15 @@
 
         public void UpdatePositionTo(int X, int Y)
         {
-            x = (byte)X;
-            y = (byte)Y;
+            x = X;
+            y = Y;
         }
 
-        public Enemy(byte Xvalue, byte Yvalue)
+        public Enemy(int Xvalue, int Yvalue)
         {
             x = Xvalue;
             y = Yvalue;
+            SaveChar = ' ';
 
             MoveEnemy = () =>
             {
@@ -125,7 +185,9 @@
                                         if (!IsPrinting)
                                         {
                                             IsPrinting = true;
+                                            Thread.Sleep(10);
                                             Map.DeleteCharacter(x, y);
+
                                             Map.PrintCharacter(EnemySkin, x, y - 1);
                                             IsPrinting = false;
                                             break;
@@ -217,12 +279,6 @@
         else return false;
     }
 
-    private static int SaveCursorX, SaveCursorY;
-    public static void SaveCursorPosition()
-    {
-        SaveCursorX = Console.CursorLeft;
-        SaveCursorY = Console.CursorTop;
-    }
     public static void ReturnCursorToSave()
     {
         Console.CursorLeft = CursorX;
@@ -233,7 +289,6 @@
     {
         while (ContinueGame)
         {
-
             ConsoleKey UserInput = Console.ReadKey(true).Key;
 
             if (UserInput == ConsoleKey.W || UserInput == ConsoleKey.UpArrow)
@@ -274,30 +329,84 @@
     {
         ContinueGame = false;
 
-        Console.Clear();
-        Console.WriteLine("\nGame over\n");
+        if (!Won)
+        {
+            Console.Clear();
+            Console.WriteLine("\nGame over. You lost.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nYour score was {Score}.\n");
+        }
+        if (Won)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nGame over. You won!");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"\nYour score was {Score}.\n");
+        }
     }
+
     static void Main()
     {
-        Map map = new Map(12, 175);
+        string[] save = File.ReadAllLines("map2.txt");
+
+
+        for (int i = 0; i < save.Length; i++)
+        {
+            OriginalMap.Add(save[i].ToCharArray());
+        }
+
+
+        Map map = new Map(0, 150);
 
         Map.PrintMap();
+        Map.ColorSpecialCharacters();
+
+
 
         Action TouchedEnemy = () =>
         {
             while (ContinueGame)
             {
-                while (true)
+                //while (true)
+                // {
+                Thread.Sleep(rnd.Next(1, 21));
+                if (!IsPrinting)
                 {
-                    Thread.Sleep(rnd.Next(1, 21));
-                    if (!IsPrinting)
+                    foreach (Enemy e in map.ListOfEnemies)
                     {
-                        foreach (Enemy e in map.ListOfEnemies)
+                        if (CursorX == e.x && CursorY == e.y)
                         {
-                            if (CursorX == e.x && CursorY == e.y)
-                            {
-                                EndGame();
-                            }
+                            EndGame();
+                        }
+                    }
+                    // break;
+                }
+                // }
+            }
+        };
+
+        Action TouchedSpecialCharacter = () =>
+        {
+            while (ContinueGame)
+            {
+                Thread.Sleep(50);
+                if (Map.map[CursorY][CursorX] == '.')
+                {
+                    while (true)
+                    {
+                        if (!IsPrinting)
+                        {
+                            IsPrinting = true;
+                            Map.map[CursorY][CursorX] = ' ';
+                            //OriginalMap[CursorY][CursorX] = ' ';
+                            Console.CursorTop = CursorY;
+                            Console.CursorLeft = CursorX;
+                            Console.Write(' ');
+                            Console.CursorTop = CursorY;
+                            Console.CursorLeft = CursorX;
+                            IsPrinting = false;
+                            Score += 1;
                         }
                         break;
                     }
@@ -305,13 +414,17 @@
             }
         };
 
-        Task.Run(TouchedEnemy);
+
+        Task.Run(TouchedSpecialCharacter);
+        //Task.Run(TouchedEnemy);
+
+
         Console.ForegroundColor = ConsoleColor.Red;
 
         foreach (Enemy e in map.ListOfEnemies)
         {
             Task.Run(e.MoveEnemy);
-            Thread.Sleep(13);
+            Thread.Sleep(3);
         }
         ReadKey();
     }
