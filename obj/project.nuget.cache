@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7WwquYDiD+wqqZyje9GIWvEvO+5x2glVLKWr6+NzNAxGdXNBtZaIf6/qDTsoLxWgTb3eMF/+ZYF42aQgV2pKYg==",
+  "dgSpecHash": "jLzJjSPbuscOABt5RoEs5n6tmDMNn1eP52Big+GUyd3B56vrFpbP/nNHVKae8mhwDNXD9xK0bZvtr51Ot3hsEQ==",
   "success": true,
-  "projectFilePath": "/Users/agus/my-code-dir/boludeo4/boludeo4.csproj",
+  "projectFilePath": "/Users/agus/my-code-dir/Pacman/boludeo4.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

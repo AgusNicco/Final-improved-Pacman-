@@ -277,7 +277,7 @@
 
     public static bool TryMove(int x, int y)
     {
-        if (Map.map[y][x] != '#') return true;
+        if (Map.map[y][x] != '#' && Map.map[y][x] != '-' && Map.map[y][x] != '+' && Map.map[y][x] != '|')  return true;
         else return false;
     }
 
@@ -406,11 +406,12 @@
         // }
 
 
-        Map map = new Map(0, 200);
+        Map map = new Map(0, 100);
 
         Map.PrintMap();
         Map.ColorSpecialCharacters();
 
+        ReturnCursorToSave();
 
         Action TouchedSpecialCharacter = () =>
         {
